@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  central_server:
+    container_name: central_server
+    build: ./central_server
+    ports:
+      - 3001:3001
+    environment:
+      - PORT=3001
+      - NODE_ENV=DEVELOPMENT
+    volumes:
+      - ./central_server/src:/code/src
+      - ./central_server/package.json:/code/package.json
+      - ./central_server/node_modules:/code/node_modules
+
+  dashboard:
+    container_name: dashboard
+    build: ./dashboard
+    ports:
+      - 3000:3000
+    env_file: ./dashboard/.env
+    volumes:
+      - ./dashboard/src:/code/src
+      - ./dashboard/public:/code/public
+      - ./dashboard/package.json:/code/package.json
+      - ./dashboard/node_modules:/code/node_modules
+

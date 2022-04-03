@@ -1,17 +1,12 @@
 #include <stdio.h>
-#include "cJSON.h"
+#include "app_config.h"
+#include "socket.h"
 
 int main(){
-  char json_string[] = "{\"name\": \"Jack (\"Bee\") Nimble\",\"format\": {\"type\": \"rect\" }}";
-
-  cJSON *root = cJSON_Parse(json_string);
-
-  cJSON *format = cJSON_GetObjectItem(root, "format");
-  cJSON *type = cJSON_GetObjectItem(format, "type");
-  if (cJSON_IsString(type))
-  {
-    printf("type: %s\n", type->valuestring);
-  }
-  // cJSON_Delete(root);
+  load_config();
+  printf("%s:%d\n", app_config.central_server_ip, app_config.central_server_port);
+  init_socket();
+  send_socket_message("oie");
+  close_socket();
   return 0;
 }

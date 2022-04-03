@@ -1,7 +1,7 @@
 # CC = /Users/gabibs/.armv7-unknown-linux-gnueabihf/bin/armv7-unknown-linux-gnueabihf-gcc
 CC = gcc
 # LDFLAGS = -lwiringPi -lpthread -lncurses
-LDFLAGS = -lcjson
+LDFLAGS =
 BLDDIR = .
 INCDIR = $(BLDDIR)/inc
 SRCDIR = $(BLDDIR)/src
@@ -14,7 +14,7 @@ EXE = bin/bin
 all: clean $(EXE)
 
 $(EXE): $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJDIR)/*.o -o $@
+	$(CC) $(LDFLAGS) $(OBJDIR)/*.o -lm -o $@
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@mkdir -p $(@D)

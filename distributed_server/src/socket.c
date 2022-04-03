@@ -1,64 +1,62 @@
-// #include "socket.h"
+#include "socket.h"
 
-// #include <stdio.h>
-// #include <sys/socket.h>
-// #include <arpa/inet.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <unistd.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include "app_config.h"
 
-// int main(int argc, char *argv[])
-// {
-//   int clienteSocket;
-//   struct sockaddr_in servidorAddr, cli;
-//   unsigned short servidorPorta;
-//   char *IP_Servidor;
-//   char *mensagem;
-//   char buffer[101];
-//   unsigned int tamanhoMensagem;
+int socket_client;
+struct sockaddr_in server_addr;
+unsigned short server_port;
+char *server_ip;
 
-//   int bytesRecebidos;
-//   int totalBytesRecebidos;
+void init_socket(){
+  server_port = (unsigned short) app_config.central_server_port;
+  server_ip = app_config.central_server_ip;
 
-//   if ((argc < 3) || (argc > 4))
-//   {
-//     printf("Uso: %s <IP do Servidor> <Porta> <Mensagem>\n", argv[0]);
-//     exit(1);
-//   }
+  // Create socket
+  if ((socket_client = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+    printf("[SOCKET ERROR] - Error on initializing socket.\n");
 
-//   IP_Servidor = argv[1];
-//   servidorPorta = atoi(argv[2]);
-//   mensagem = argv[3];
+  // Builds struct sockaddr_in
+  memset(&server_addr, 0, sizeof(server_addr)); // Clear structure
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_addr.s_addr = inet_addr(server_ip);
+  server_addr.sin_port = htons(server_port);
 
-//   // Criar Socket
-//   if ((clienteSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-//     printf("Erro no socket()\n");
+  // Connect
+  if (connect(socket_client, (struct sockaddr *)&server_addr,
+              sizeof(server_addr)) < 0)
+    printf("[SOCKET ERROR] - Error on connecting socket.\n");
 
-//   // Construir struct sockaddr_in
-//   memset(&servidorAddr, 0, sizeof(servidorAddr)); // Zerando a estrutura de dados
-//   servidorAddr.sin_family = AF_INET;
-//   servidorAddr.sin_addr.s_addr = inet_addr(IP_Servidor);
-//   servidorAddr.sin_port = htons(servidorPorta);
+}
 
-//   // Connect
-//   if (connect(clienteSocket, (struct sockaddr *)&servidorAddr,
-//               sizeof(servidorAddr)) < 0)
-//     printf("Erro no connect()\n");
+void send_socket_message(char* message) {
+  unsigned int message_size = strlen(message);
+  int bytes_received, bytes_size = 0;
+  char buffer[SOCKET_BUFF_SIZE];
 
-//   tamanhoMensagem = strlen(mensagem);
+  // Send message
+  if (send(socket_client, message, message_size, 0) != message_size)
+    printf("[SOCKET ERROR] - Error on sending message\n");
 
-//   if (send(clienteSocket, mensagem, tamanhoMensagem, 0) != tamanhoMensagem)
-//     printf("Erro no envio: numero de bytes enviados diferente do esperado\n");
+  // Receives response
+  while (bytes_size < message_size) {
+    bytes_received = recv(socket_client, buffer, SOCKET_BUFF_SIZE - 1, 0);
 
-//   totalBytesRecebidos = 0;
-//   while (totalBytesRecebidos < tamanhoMensagem)
-//   {
-//     if ((bytesRecebidos = recv(clienteSocket, buffer, 100 - 1, 0)) <= 0)
-//       printf("Não recebeu o total de bytes enviados\n");
-//     totalBytesRecebidos += bytesRecebidos;
-//     buffer[100] = '\0';
-//     printf("%s\n", buffer);
-//   }
-//   close(clienteSocket);
-//   exit(0);
-// }
+    if (bytes_received <= 0)
+      printf("[SOCKET ERROR] - Message not received.\n");
+
+    bytes_size += bytes_received;
+    buffer[bytes_received] = '\0';
+    printf("[SOCKET] - Message received: %s\n", buffer);
+  }
+
+}
+
+void close_socket(){
+  close(socket_client);
+}

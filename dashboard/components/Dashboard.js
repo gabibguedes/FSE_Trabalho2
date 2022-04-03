@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 import io from "socket.io-client"
 
 const Dashboard = () => {
-  const { REACT_APP_CENTRAL_SERVER } = process.env;
-  const socket = io(REACT_APP_CENTRAL_SERVER);
-
+  const { NEXT_PUBLIC_SOCKET_URL } = process.env;
+  const socket = io(NEXT_PUBLIC_SOCKET_URL);
 
   useEffect(() => {
     socket.on('connect', (socket) => {
-      socket.data = "alice";
+      // socket.data = "alice";
       console.log('[SOCKET] Socket is conected.');
+      socket.emit()
     });
   }, []);
 

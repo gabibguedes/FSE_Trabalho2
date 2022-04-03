@@ -21,8 +21,5 @@ services:
       - 3000:3000
     env_file: ./dashboard/.env
     volumes:
-      - ./dashboard/src:/code/src
-      - ./dashboard/public:/code/public
-      - ./dashboard/package.json:/code/package.json
-      - ./dashboard/node_modules:/code/node_modules
+      - ./dashboard:/code
 

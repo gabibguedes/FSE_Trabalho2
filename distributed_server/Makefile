@@ -1,23 +1,27 @@
-BINFOLDER := bin/
-INCFOLDER := inc/
-SRCFOLDER := src/
-OBJFOLDER := obj/
+# CC = /Users/gabibs/.armv7-unknown-linux-gnueabihf/bin/armv7-unknown-linux-gnueabihf-gcc
+CC = gcc
+# LDFLAGS = -lwiringPi -lpthread -lncurses
+LDFLAGS = -lcjson
+BLDDIR = .
+INCDIR = $(BLDDIR)/inc
+SRCDIR = $(BLDDIR)/src
+OBJDIR = $(BLDDIR)/obj
+CFLAGS = -c -Wall -I$(INCDIR)
+SRC = $(wildcard $(SRCDIR)/*.c)
+OBJ = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
+EXE = bin/bin
 
-CC := g++
-CFLAGS := -Wall
+all: clean $(EXE)
 
-SRCFILES := $(wildcard src/*.cpp)
+$(EXE): $(OBJ)
+	$(CC) $(LDFLAGS) $(OBJDIR)/*.o -o $@
 
-all: $(SRCFILES:src/%.cpp=obj/%.o)
-	$(CC) $(CFLAGS) obj/*.o -o bin/main
+$(OBJDIR)/%.o : $(SRCDIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $< -o $@
 
-obj/%.o: src/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ -I./inc
-
-.PHONY: clean
 clean:
-	rm -rf obj/*
-	rm -rf bin/*
+	-rm -f $(OBJDIR)/*.o $(EXE)
 
 run:
-	bin/main
+	$(EXE)

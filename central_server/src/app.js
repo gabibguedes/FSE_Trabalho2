@@ -35,19 +35,9 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 // })
 
 // io.on('connection', socket => {
-//   console.log('User has connected.')
-//   socket.on('disconnect', () => {
-//     console.log("User has disconnected.")
-//   })
-
-//   socket.on('key', data => {
-//     console.log("key received!!!");
+//   socket.on('dasboard', data => {
+//     console.log('[SOCKET DASHBOARD] - data received: ' + data);
 //   });
 // })
 
 // serverio.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`)
-// })
-

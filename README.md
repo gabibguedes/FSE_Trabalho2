@@ -1,5 +1,10 @@
 # Trabalho 2 de FSE
 
+
+Porta (Servidor Central) 10005
+Porta (Servidor Distribuído 1) 10105
+Porta (Servidor Distribuído 2) 10205
+
 2 códigos:
 
 1 para o central

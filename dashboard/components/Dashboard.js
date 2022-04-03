@@ -3,13 +3,14 @@ import io from "socket.io-client"
 
 const Dashboard = () => {
   const { NEXT_PUBLIC_SOCKET_URL } = process.env;
-  const socket = io(NEXT_PUBLIC_SOCKET_URL);
+  const socket = io.connect(NEXT_PUBLIC_SOCKET_URL, {
+    reconnection: true
+  });
 
   useEffect(() => {
-    socket.on('connect', (socket) => {
-      // socket.data = "alice";
+    socket.on('connect', () => {
       console.log('[SOCKET] Socket is conected.');
-      socket.emit()
+      socket.emit('dasboard', "{bla: 'a'}");
     });
   }, []);
 

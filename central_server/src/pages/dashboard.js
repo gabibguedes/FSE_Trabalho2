@@ -14,7 +14,7 @@ const dashboard = () => {
   return html(`
     <div style="padding: 20px 50px 0 50px">
       <h1>Dashboard do Servidor Central</h1>
-      <div style="display: flex">
+      <div style="display: flex; justify-content: space-evenly">
         ${render_floors()}
       </div>
     </div>

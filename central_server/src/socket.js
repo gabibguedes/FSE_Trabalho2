@@ -14,7 +14,14 @@ const handle_message_received = (message) => {
   try{
     const payload = JSON.parse(message)
     if(payload.code === 1){
-      data[payload.name] = payload.data;
+      data[payload.name] = {
+        ...payload.data,
+        server_ip: payload.server_ip,
+        port: payload.port
+      };
+      console.log(
+        `[SOCKET RECEIVED] - Message from ${payload.server_ip}:${payload.port} (${payload.name})`
+      )
     }
   }catch (err) {
     console.log('[SOCKET ERROR] - Error on parsing input to JSON.')
@@ -27,7 +34,6 @@ const initSocketServer = () => {
     socket.on('readable',() => {
       let chunk = null;
         while ((chunk = socket.read()) !== null) {
-          console.log(`[SOCKET MESSAGE RECEIVED] ${chunk}`)
           handle_message_received(chunk)
         }
     });

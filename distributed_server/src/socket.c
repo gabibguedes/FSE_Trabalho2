@@ -36,25 +36,27 @@ void init_socket(){
 
 void send_socket_message(char* message) {
   unsigned int message_size = strlen(message);
-  int bytes_received, bytes_size = 0;
-  char buffer[SOCKET_BUFF_SIZE];
 
   // Send message
   if (send(socket_client, message, message_size, 0) != message_size)
     printf("[SOCKET ERROR] - Error on sending message\n");
+}
 
+char* receive_socket_message(){
+  int bytes_received, bytes_size = 0;
+  char buffer[SOCKET_BUFF_SIZE];
   // Receives response
-  while (bytes_size < message_size) {
-    bytes_received = recv(socket_client, buffer, SOCKET_BUFF_SIZE - 1, 0);
+  // while (bytes_size < message_size) {
+  bytes_received = recv(socket_client, buffer, SOCKET_BUFF_SIZE - 1, 0);
 
-    if (bytes_received <= 0)
-      printf("[SOCKET ERROR] - Message not received.\n");
+  if (bytes_received <= 0)
+    printf("[SOCKET ERROR] - Message not received.\n");
 
-    bytes_size += bytes_received;
-    buffer[bytes_received] = '\0';
-    printf("[SOCKET] - Message received: %s\n", buffer);
-  }
-
+  bytes_size += bytes_received;
+  buffer[bytes_received] = '\0';
+  printf("[SOCKET] - Message received: %s\n", buffer);
+  // }
+  return buffer;
 }
 
 void close_socket(){

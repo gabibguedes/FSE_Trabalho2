@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cJSON.h"
+#include "gpio.h"
 
 cJSON *root;
 
@@ -25,61 +26,52 @@ char* read_config_file(){
   return buffer;
 }
 
-GpioType get_gpio_type(char* tag){
-  if(strstr(tag, "Lâmpada") && strstr(tag, "01"))
-    return LAMP_ROOM_1;
+GpioEntry gpio_from_json(cJSON *item){
+  GpioEntry gpio;
 
-  if(strstr(tag, "Lâmpada") && strstr(tag, "02"))
-    return LAMP_ROOM_2;
+  cJSON *tag = cJSON_GetObjectItem(item, "tag");
+  cJSON *gpio_pin = cJSON_GetObjectItem(item, "gpio");
 
-  if(strstr(tag, "Lâmpadas do Corredor"))
-    return LAMP_HALL;
+  gpio.type = get_gpio_type(tag->valuestring);
+  gpio.pin = gpio_pin->valueint;
+  gpio.label = tag->valuestring;
 
-  if(strstr(tag, "Ar-Condicionado"))
-    return AIR_CONDITIONING;
-
-  if(strstr(tag, "Sensor de Presença"))
-    return PRESENCE;
-
-  if(strstr(tag, "Sensor de Fumaça"))
-    return SMOKE;
-
-  if(strstr(tag, "Janela") && strstr(tag, "01"))
-    return WINDOW_ROOM_1;
-
-  if(strstr(tag, "Janela") && strstr(tag, "02"))
-    return WINDOW_ROOM_2;
-
-  if(strstr(tag ,"Porta Entrada"))
-    return DOOR;
-
-  if(strstr(tag, "Pessoas Entrando"))
-    return PEOPLE_COUNT_IN;
-
-  if(strstr(tag, "Pessoas Saindo"))
-    return PEOPLE_COUNT_OUT;
-
-  if(strstr(tag, "Aspersor"))
-    return WATER_SPRINKLER;
-
-  return NOT_FOUND;
+  return gpio;
 }
 
 GpioEntry* add_gpio_to_config(cJSON *obj_keys, int arr_size){
   GpioEntry* arr = malloc(sizeof(GpioEntry) * arr_size);
 
   for(int i=0; i < arr_size; i++){
-    GpioEntry entry;
-
     cJSON *subitem = cJSON_GetArrayItem(obj_keys, i);
-    cJSON *tag = cJSON_GetObjectItem(subitem, "tag");
-    cJSON *gpio_pin = cJSON_GetObjectItem(subitem, "gpio");
-
-    entry.type = get_gpio_type(tag->valuestring);
-    entry.pin = gpio_pin->valueint;
-    arr[i] = entry;
+    arr[i] = gpio_from_json(subitem);
   }
   return arr;
+}
+
+void print_gpio(GpioEntry gpio){
+  printf("%s\ntype: %d, gpio: %d\n\n", gpio.label, gpio.type, gpio.pin);
+}
+
+int find_input_idx_type(int type){
+  for(int i = 0; i < app_config.inputs_size; i++){
+    if(app_config.inputs[i].type == type)
+      return i;
+  }
+  return -1;
+}
+
+void get_people_count_gpios(){
+  int people_in_idx = find_input_idx_type(PEOPLE_COUNT_IN);
+  int people_out_idx = find_input_idx_type(PEOPLE_COUNT_OUT);
+
+  if (people_in_idx == -1 || people_out_idx == -1) {
+    printf("[GPIO PIN ERROR] - Error on getting people in and out pin.\n");
+    return;
+  }
+
+  app_config.people_in = app_config.inputs[people_in_idx];
+  app_config.people_out = app_config.inputs[people_out_idx];
 }
 
 void load_config(){
@@ -88,9 +80,11 @@ void load_config(){
   root = cJSON_Parse(json_config);
   cJSON *central_server_ip = cJSON_GetObjectItem(root, "ip_servidor_central");
   cJSON *central_server_port = cJSON_GetObjectItem(root, "porta_servidor_central");
+  cJSON *name = cJSON_GetObjectItem(root, "nome");
 
   app_config.central_server_ip = central_server_ip->valuestring;
   app_config.central_server_port = central_server_port->valueint;
+  app_config.name = name->valuestring;
 
   cJSON *inputs = cJSON_GetObjectItem(root, "inputs");
   app_config.inputs_size = cJSON_GetArraySize(inputs);
@@ -99,20 +93,9 @@ void load_config(){
   cJSON *outputs = cJSON_GetObjectItem(root, "outputs");
   app_config.outputs_size = cJSON_GetArraySize(outputs);
   app_config.outputs = add_gpio_to_config(outputs, app_config.outputs_size);
-}
 
-int get_people_count_in_idx(){
-  for(int i = 0; i < app_config.inputs_size; i++){
-    if(app_config.inputs[i].type == PEOPLE_COUNT_IN)
-      return i;
-  }
-  return -1;
-}
+  cJSON *temp_and_hum = cJSON_GetObjectItem(root, "sensor_temperatura");
+  app_config.temp_and_humidity = add_gpio_to_config(temp_and_hum, 1)[0];
 
-int get_people_count_out_idx(){
-  for(int i = 0; i < app_config.inputs_size; i++){
-    if(app_config.inputs[i].type == PEOPLE_COUNT_OUT)
-      return i;
-  }
-  return -1;
+  get_people_count_gpios();
 }

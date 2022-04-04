@@ -4,6 +4,7 @@
 
 void init_socket();
 void send_socket_message(char* message);
+char* receive_socket_message();
 void close_socket();
 
 #endif

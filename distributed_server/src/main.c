@@ -6,11 +6,12 @@
 
 int main(){
   load_config();
-  // init_socket();
+  init_socket();
   // send_socket_message("oie");
   // close_socket();
   initialize_gpio();
   // read_inputs();
   app_loop();
+
   return 0;
 }

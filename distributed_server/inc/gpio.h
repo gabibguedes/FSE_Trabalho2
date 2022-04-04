@@ -1,22 +1,36 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#define PWM_MAX 100
-#define PWM_MIN 0
+typedef enum gpio_type {
+  LAMP_ROOM_1 = 1,
+  LAMP_ROOM_2 = 2,
+  LAMP_HALL = 3,
+  AIR_CONDITIONING  = 4,
+  PRESENCE = 5,
+  SMOKE = 6,
+  WINDOW_ROOM_1 = 7,
+  WINDOW_ROOM_2 = 8,
+  DOOR = 9,
+  PEOPLE_COUNT_IN = 10,
+  PEOPLE_COUNT_OUT = 11,
+  WATER_SPRINKLER = 12,
+  TEMP_AND_HUMIDITY = 13,
+  NOT_FOUND = 404
+} GpioType;
 
-// #define FAN_MIN_VALUE 40
+typedef struct gpio_entry {
+  GpioType type;
+  int pin;
+  char* label;
+} GpioEntry;
 
-// #define FAN_PIN 5
-// #define RESISTENCE_PIN 4
+typedef struct gpio_read {
+  GpioEntry entry;
+  int value;
+} GpioRead;
 
 void initialize_gpio();
-void read_inputs();
 int read_gpio(int pin);
-// void use_fan(float pwm);
-// void use_resistence(float pwm);
-// void turn_off_fan();
-// void turn_off_resistence();
-// void turn_off_fan_and_resistence();
-// void controll_temperature(float pid_result);
+GpioType get_gpio_type(char *tag);
 
 #endif

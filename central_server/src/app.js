@@ -1,20 +1,19 @@
 const express = require('express')
 const router = require('./routes')
-const net = require('net');
+const { initSocketServer } = require('./socket')
 
-const { PORT } = process.env
+const { SOCKET_PORT, DASHBOARD_PORT } = process.env
 
 const app = express()
 app.use(router)
 
-const server = net.createServer((socket) => {
-  socket.on('readable',() => {
-    let chunk = null;
-      while ((chunk = socket.read()) !== null) {
-        console.log(`[RECEIVED] ${chunk}`)
-        socket.write(chunk);
-      }
-  });
-});
+app.listen(DASHBOARD_PORT, () =>
+  console.log(`Dashboard is running on PORT ${DASHBOARD_PORT}`)
+)
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+const server = initSocketServer()
+
+server.listen(SOCKET_PORT, () =>
+  console.log(`Socket is running on PORT ${SOCKET_PORT}`)
+)
+

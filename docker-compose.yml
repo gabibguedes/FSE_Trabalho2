@@ -6,20 +6,13 @@ services:
     build: ./central_server
     ports:
       - 3001:3001
+      - 3002:3002
     environment:
-      - PORT=3001
-      - NODE_ENV=DEVELOPMENT
+      - SOCKET_PORT=3001
+      - DASHBOARD_PORT=3002
+      - NODE_ENV=development
     volumes:
       - ./central_server/src:/code/src
       - ./central_server/package.json:/code/package.json
       - ./central_server/node_modules:/code/node_modules
-
-  dashboard:
-    container_name: dashboard
-    build: ./dashboard
-    ports:
-      - 3000:3000
-    env_file: ./dashboard/.env
-    volumes:
-      - ./dashboard:/code
 

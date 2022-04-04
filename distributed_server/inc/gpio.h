@@ -11,6 +11,7 @@
 
 void initialize_gpio();
 void read_inputs();
+int read_gpio(int pin);
 // void use_fan(float pwm);
 // void use_resistence(float pwm);
 // void turn_off_fan();

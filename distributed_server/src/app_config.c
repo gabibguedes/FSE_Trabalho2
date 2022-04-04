@@ -101,3 +101,18 @@ void load_config(){
   app_config.outputs = add_gpio_to_config(outputs, app_config.outputs_size);
 }
 
+int get_people_count_in_idx(){
+  for(int i = 0; i < app_config.inputs_size; i++){
+    if(app_config.inputs[i].type == PEOPLE_COUNT_IN)
+      return i;
+  }
+  return -1;
+}
+
+int get_people_count_out_idx(){
+  for(int i = 0; i < app_config.inputs_size; i++){
+    if(app_config.inputs[i].type == PEOPLE_COUNT_OUT)
+      return i;
+  }
+  return -1;
+}

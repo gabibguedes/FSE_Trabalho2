@@ -34,7 +34,7 @@ typedef struct app_config {
 
 AppConfig app_config;
 void load_config();
-int get_people_cont_in_idx();
-int get_people_cont_out_idx();
+int get_people_count_in_idx();
+int get_people_count_out_idx();
 
 #endif

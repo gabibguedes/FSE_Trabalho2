@@ -2,6 +2,7 @@
 #include "app_config.h"
 #include "socket.h"
 #include "gpio.h"
+#include "app.h"
 
 int main(){
   load_config();
@@ -9,6 +10,7 @@ int main(){
   // send_socket_message("oie");
   // close_socket();
   initialize_gpio();
-  read_inputs();
+  // read_inputs();
+  app_loop();
   return 0;
 }

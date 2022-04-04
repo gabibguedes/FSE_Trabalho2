@@ -16,6 +16,6 @@ void read_inputs(){
     printf("gpio:%d, value: %d\n", app_config.inputs[i].pin, digitalRead(app_config.inputs[i].pin));
 }
 
-
-
-
+int read_gpio(int pin){
+  return digitalRead(pin);
+}

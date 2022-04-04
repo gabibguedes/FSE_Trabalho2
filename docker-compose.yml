@@ -6,11 +6,10 @@ services:
     build: ./central_server
     ports:
       - 10005:10005
-      - 3003:3003
-    environment:
-      - SOCKET_PORT=10005
-      - DASHBOARD_PORT=3003
-      - NODE_ENV=development
+      - 3002:3002
+    security_opt:
+      - seccomp:unconfined
+    env_file: .env
     volumes:
       - ./central_server/src:/code/src
       - ./central_server/package.json:/code/package.json

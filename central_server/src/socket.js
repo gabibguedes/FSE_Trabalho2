@@ -1,7 +1,7 @@
 const net = require('net');
 
 let socket;
-let data;
+let data = {};
 
 const write_on_socket = (message) => {
   socket.write(message);
@@ -10,15 +10,25 @@ const get_socket_data = (message) => {
   return data;
 }
 
+const handle_message_received = (message) => {
+  try{
+    const payload = JSON.parse(message)
+    if(payload.code === 1){
+      data[payload.name] = payload.data;
+    }
+  }catch (err) {
+    console.log('[SOCKET ERROR] - Error on parsing input to JSON.')
+  }
+}
+
 const initSocketServer = () => {
   return net.createServer((net_socket) => {
     socket = net_socket
     socket.on('readable',() => {
       let chunk = null;
         while ((chunk = socket.read()) !== null) {
-          console.log(`[RECEIVED] ${chunk}`)
-          data = chunk;
-          write_on_socket(chunk)
+          console.log(`[SOCKET MESSAGE RECEIVED] ${chunk}`)
+          handle_message_received(chunk)
         }
     });
   });

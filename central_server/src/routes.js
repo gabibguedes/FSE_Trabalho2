@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { write_on_socket } = require('./socket')
+const Commands = require('./controllers/commands')
 
 const dashboard = require('./pages/dashboard')
 
@@ -27,5 +28,7 @@ router.get('/button', (req, res) => {
     message: 'Central server is running'
   }).status(200);
 })
+
+router.post('/gpio-update', Commands.change_gpio_value)
 
 module.exports = router;

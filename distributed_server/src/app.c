@@ -54,7 +54,7 @@ GpioRead* init_gpio_read(GpioEntry* entries, int size){
   GpioRead * arr = malloc(sizeof(GpioRead) * size);
   for(int i=0; i< size; i++){
     GpioRead gpio;
-    gpio.entry = app_config.inputs[i];
+    gpio.entry = entries[i];
     gpio.value = 0;
     arr[i] = gpio;
   }
@@ -78,10 +78,10 @@ void add_gpio_to_json(cJSON * item, char* tag, GpioRead *arr, int size){
   cJSON *gpios = cJSON_CreateArray();
   cJSON_AddItemToObject(item, tag, gpios);
   for(int i=0; i<size; i++){
-    printf("%s: %d\n", inputs[i].entry.label, inputs[i].value);
     cJSON *gpio;
     cJSON_AddItemToArray(gpios, gpio = cJSON_CreateObject());
     cJSON_AddItemToObject(gpio, "tag", cJSON_CreateString(arr[i].entry.label));
+    cJSON_AddItemToObject(gpio, "gpio", cJSON_CreateNumber(arr[i].entry.pin));
     cJSON_AddItemToObject(gpio, "value", cJSON_CreateBool(arr[i].value));
   }
 }
@@ -90,6 +90,8 @@ char* build_json(){
   char* out;
   cJSON *root = cJSON_CreateObject();
   cJSON_AddItemToObject(root, "name", cJSON_CreateString(app_config.name));
+  cJSON_AddItemToObject(root, "server_ip", cJSON_CreateString(app_config.this_server_ip));
+  cJSON_AddItemToObject(root, "port", cJSON_CreateNumber(app_config.this_server_port));
   cJSON_AddItemToObject(root, "message", cJSON_CreateString("update values"));
   cJSON_AddItemToObject(root, "code", cJSON_CreateNumber(1));
 

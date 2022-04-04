@@ -6,6 +6,9 @@ typedef struct app_config {
   char* central_server_ip;
   int central_server_port;
 
+  char* this_server_ip;
+  int this_server_port;
+
   char* name;
 
   GpioEntry* inputs;

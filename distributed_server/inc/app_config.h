@@ -19,6 +19,8 @@ typedef struct app_config {
   GpioEntry temp_and_humidity;
   GpioEntry people_in;
   GpioEntry people_out;
+
+  int alarm;
 } AppConfig;
 
 AppConfig app_config;

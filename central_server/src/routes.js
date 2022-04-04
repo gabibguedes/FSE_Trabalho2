@@ -18,17 +18,7 @@ router.get("/", (req, res) => {
   ).status(200);
 });
 
-router.get('/button', (req, res) => {
-
-  write_on_socket('Eu amo o Gabriel Davi')
-
-
-  res.send({
-    success: true,
-    message: 'Central server is running'
-  }).status(200);
-})
-
 router.post('/gpio-update', Commands.change_gpio_value)
+router.post('/alarm', Commands.change_alarm_value)
 
 module.exports = router;

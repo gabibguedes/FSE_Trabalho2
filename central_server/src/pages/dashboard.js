@@ -1,9 +1,11 @@
 const html = require('./html')
 const floor = require('../components/floor')
-const { get_socket_data } = require('../socket')
+const {
+  get_distributed_server_data,
+} = require('../context/app_state')
 
 const dashboard = () => {
-  const data = get_socket_data()
+  const data = get_distributed_server_data()
   let people_sum = 0
 
   const render_floors = () => {

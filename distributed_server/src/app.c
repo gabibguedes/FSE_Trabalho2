@@ -100,6 +100,7 @@ char* build_json(){
   cJSON_AddItemToObject(data, "temperature", cJSON_CreateNumber(sensor.temperature));
   cJSON_AddItemToObject(data, "humidity", cJSON_CreateNumber(sensor.humidity));
   cJSON_AddItemToObject(data, "people_count", cJSON_CreateNumber(people_count));
+  cJSON_AddItemToObject(data, "alarm", cJSON_CreateBool(app_config.alarm));
 
   add_gpio_to_json(data, "inputs", inputs, app_config.inputs_size);
   add_gpio_to_json(data, "outputs", outputs, app_config.outputs_size);

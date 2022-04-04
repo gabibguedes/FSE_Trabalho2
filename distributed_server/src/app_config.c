@@ -106,5 +106,7 @@ void load_config(){
   cJSON *temp_and_hum = cJSON_GetObjectItem(root, "sensor_temperatura");
   app_config.temp_and_humidity = add_gpio_to_config(temp_and_hum, 1)[0];
 
+  app_config.alarm = 0;
+
   get_people_count_gpios();
 }

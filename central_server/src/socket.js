@@ -1,16 +1,17 @@
 const net = require('net');
+const {
+  get_distributed_server_data,
+  set_distributed_server_data
+} = require('./context/app_state')
 
 let socket;
-let data = {};
 
 const write_on_socket = (message) => {
   socket.write(message);
 }
-const get_socket_data = (message) => {
-  return data;
-}
 
 const handle_message_received = (message) => {
+  let data = get_distributed_server_data()
   try{
     const payload = JSON.parse(message)
     if(payload.code === 1){
@@ -18,7 +19,8 @@ const handle_message_received = (message) => {
         ...payload.data,
         server_ip: payload.server_ip,
         port: payload.port
-      };
+      }
+      set_distributed_server_data(data)
       console.log(
         `[SOCKET RECEIVED] - Message from ${payload.server_ip}:${payload.port} (${payload.name})`
       )
@@ -43,7 +45,6 @@ const initSocketServer = () => {
 
 module.exports = {
   write_on_socket,
-  initSocketServer,
-  get_socket_data
+  initSocketServer
 }
 

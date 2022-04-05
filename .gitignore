@@ -6,8 +6,4 @@ distributed_server/obj/*
 central_server/node_modules/*
 central_server/package-lock.json
 central_server/yarn.lock
-
-# Dashboard
-dashboard/node_modules/*
-dashboard/package-lock.json
-dashboard/yarn.lock
+central_server/central_server_log.csv

@@ -11,14 +11,15 @@ void initialize_gpio(){
 
   for(int i=0; i < app_config.inputs_size; i++)
     pinMode(app_config.inputs[i].pin, INPUT);
+
+  for(int i=0; i < app_config.outputs_size; i++)
+    pinMode(app_config.outputs[i].pin, OUTPUT);
 }
 
 int read_gpio(int pin){
-  pinMode(pin, INPUT);
   return digitalRead(pin);
 }
 void write_gpio(int pin, int value){
-  pinMode(pin, OUTPUT);
   digitalWrite(pin, value);
 }
 

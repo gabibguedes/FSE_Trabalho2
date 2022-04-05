@@ -8,7 +8,9 @@ const floor = (name, data) => {
 
   const alarm_body = {
     value: !alarm,
-    name: name
+    name: name,
+    server_ip: data.server_ip,
+    port: data.port
   }
 
   const has_presence = () => {

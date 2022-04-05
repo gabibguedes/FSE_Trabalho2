@@ -14,7 +14,12 @@ void initialize_gpio(){
 }
 
 int read_gpio(int pin){
+  pinMode(pin, INPUT);
   return digitalRead(pin);
+}
+void write_gpio(int pin, int value){
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, value);
 }
 
 GpioType get_gpio_type(char* tag){

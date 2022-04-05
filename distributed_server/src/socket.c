@@ -42,21 +42,19 @@ void send_socket_message(char* message) {
     printf("[SOCKET ERROR] - Error on sending message\n");
 }
 
-char* receive_socket_message(){
+void receive_socket_message(char* buffer){
   int bytes_received, bytes_size = 0;
-  char buffer[SOCKET_BUFF_SIZE];
+  // char buffer[SOCKET_BUFF_SIZE];
   // Receives response
-  // while (bytes_size < message_size) {
   bytes_received = recv(socket_client, buffer, SOCKET_BUFF_SIZE - 1, 0);
 
-  if (bytes_received <= 0)
-    printf("[SOCKET ERROR] - Message not received.\n");
+  // if (bytes_received <= 0)
+  //   return 0;
 
   bytes_size += bytes_received;
   buffer[bytes_received] = '\0';
   printf("[SOCKET] - Message received: %s\n", buffer);
-  // }
-  return buffer;
+  // return buffer;
 }
 
 void close_socket(){

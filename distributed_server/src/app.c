@@ -4,16 +4,19 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gpio.h"
 #include "app_config.h"
 #include "dht22.h"
 #include "cJSON.h"
 #include "socket.h"
+#include "message_handler.h"
 
 // Threads
 pthread_t people_count_thread;
 pthread_t dht22_thread;
+pthread_t socket_listener_thread;
 
 // People count arguments
 int people_count = 0;
@@ -116,9 +119,20 @@ void print_inputs(){
   }
 }
 
+void *listen_socket(void *arg){
+  while (1){
+    char *message = malloc(100);
+    receive_socket_message(message);\
+    if(strlen(message) > 0){
+      read_message(message);
+    }
+  }
+}
+
 void app_loop(){
   pthread_create(&people_count_thread, NULL, count_people, NULL);
   pthread_create(&dht22_thread, NULL, dht22_sensors_data, NULL);
+  pthread_create(&socket_listener_thread, NULL, listen_socket, NULL);
 
   init_input_and_outputs_read();
 
@@ -130,5 +144,6 @@ void app_loop(){
 
   pthread_join(people_count_thread, NULL);
   pthread_join(dht22_thread, NULL);
+  pthread_join(socket_listener_thread, NULL);
 }
 

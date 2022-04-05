@@ -31,6 +31,7 @@ typedef struct gpio_read {
 
 void initialize_gpio();
 int read_gpio(int pin);
+void write_gpio(int pin, int value);
 GpioType get_gpio_type(char *tag);
 
 #endif

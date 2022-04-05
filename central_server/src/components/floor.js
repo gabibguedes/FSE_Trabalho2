@@ -9,6 +9,15 @@ const floor = (name, data) => {
     name: name
   }
 
+  const has_presence = () => {
+    const presence = data.inputs.filter(elem => {
+      return ((elem.tag.match(/Presença/) ||
+        elem.tag.match(/Janela/) || elem.tag.match(/Porta/)) &&
+        elem.value)
+    });
+    return presence.length > 0
+  }
+
   const render_sensor_list = (sensor_arr) => {
     return sensor_arr.map(sensor => (
       `
@@ -87,9 +96,9 @@ const floor = (name, data) => {
         oscillator.type = 'sine';
         oscillator.detune.value = 100;
         oscillator.connect(context.destination);
-        // if(alarm){
-        //   oscillator.start();
-        // }
+        if(alarm){
+          oscillator.start();
+        }
       }
 
       function activate_element(body){
@@ -113,7 +122,7 @@ const floor = (name, data) => {
           body: JSON.stringify(body)
         })
       }
-      alarm(${alarm})
+      alarm(${alarm && has_presence()})
 
     </script>
   `

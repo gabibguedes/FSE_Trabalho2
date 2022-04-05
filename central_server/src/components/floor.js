@@ -1,8 +1,10 @@
+const axios = require('axios');
 const { CENTRAL_SERVER_IP, DASHBOARD_PORT } = process.env
 const { dark_blue, red, green, grey } = require('./colors')
 
 const floor = (name, data) => {
   const alarm = data.alarm
+  let fire = false;
 
   const alarm_body = {
     value: !alarm,
@@ -17,6 +19,29 @@ const floor = (name, data) => {
     });
     return presence.length > 0
   }
+
+  const find_sprinkler = () => {
+     return data.outputs.filter(elem => {
+      return (elem.tag.match(/Aspersor/))
+    })[0];
+  }
+
+  const handle_fire = () => {
+    const presence = data.inputs.filter(elem => {
+      return (elem.tag.match(/Fumaça/) && elem.value)
+    });
+    if(presence.length > 0){
+      fire = true;
+      const sprinkler = find_sprinkler();
+      axios.post(`http://localhost:${DASHBOARD_PORT}/gpio-update`, {
+        gpio: sprinkler.gpio,
+        value: true,
+        server_ip: data.server_ip,
+        port: data.port
+      })
+    }
+  }
+
 
   const render_sensor_list = (sensor_arr) => {
     return sensor_arr.map(sensor => (
@@ -53,6 +78,8 @@ const floor = (name, data) => {
       `)
     }).join(' ')
   }
+
+  handle_fire()
 
   return `
     <div style="
@@ -122,7 +149,7 @@ const floor = (name, data) => {
           body: JSON.stringify(body)
         })
       }
-      alarm(${alarm && has_presence()})
+      alarm(${(alarm && has_presence()) || fire})
 
     </script>
   `
